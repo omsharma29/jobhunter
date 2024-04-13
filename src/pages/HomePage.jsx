@@ -10,7 +10,7 @@ export const HomePage = () => {
     <>
     <Hero  title = "Start Your Software Dev Career" subtitle = "Find the Software job that fits your skills and needs" />
     <HomeCards/>
-    <JobListing/>
+    <JobListing isHome= {true}/>
     <ViewAllJobs/>
     
     </>

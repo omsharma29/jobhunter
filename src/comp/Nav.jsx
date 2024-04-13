@@ -1,7 +1,10 @@
-import React from 'react'
+import React, { useState } from 'react'
 import logo from '../assets/Image/job.png'
+import { NavLink } from 'react-router-dom'
 
 export const Nav = () => {
+const navlink = ({isActive})=> isActive ? "text-white bg-black hover:bg-gray-900 hover:text-white rounded-md px-3 py-2" : "text-white hover:bg-gray-900 hover:text-white rounded-md px-3 py-2"
+
   return (
     <>
     <nav className="bg-indigo-700 border-b border-indigo-500">
@@ -23,21 +26,21 @@ export const Nav = () => {
             </a>
             <div className="md:ml-auto">
               <div className="flex space-x-2">
-                <a
-                  href="/index.html"
-                  className="text-white bg-black hover:bg-gray-900 hover:text-white rounded-md px-3 py-2"
-                  >Home</a
-                >
-                <a
-                  href="/jobs.html"
-                  className="text-white hover:bg-gray-900 hover:text-white rounded-md px-3 py-2"
-                  >Jobs</a
-                >
-                <a
-                  href="/add-job.html"
-                  className="text-white hover:bg-gray-900 hover:text-white rounded-md px-3 py-2"
-                  >Add Job</a
-                >
+                <NavLink
+                  to="/"
+                  className = {navlink}
+                  >Home</NavLink>
+                
+                <NavLink
+                  to="/jobs"
+                  className = {navlink}
+                  >Jobs</NavLink>
+                
+                <NavLink
+                  to="/add-job"
+                  className = {navlink}
+                  >Add Job</NavLink>
+                
               </div>
             </div>
           </div>
