@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import Spinners from '../comp/Spinners'
 import { Link } from 'react-router-dom'
+import { toast } from 'react-toastify'
 
-export const JobPage = () => {
+export const JobPage = ({deleteJob}) => {
     const {id} = useParams()
     const [jobs, setJobs] = useState(null)
     const [loading, setLoading] = useState(true)
+    const navigate = useNavigate()
     useEffect(()=>{
         const fetchJob = async()=> {
             try {
@@ -21,6 +23,17 @@ export const JobPage = () => {
         }
         fetchJob()
     }, [])
+
+    const onclickdelete = (JobID)=> {
+      const confirm = window.confirm('Are you sure you wanna delete this')
+
+      if(!confirm) return;
+
+      deleteJob(JobID)
+      toast.success('Job deleted Sucessfully')
+      navigate('/jobs')
+    }
+
   return loading? <Spinners/> :  <>
    <section>
       <div className="container m-auto py-6 px-6">
@@ -97,12 +110,12 @@ export const JobPage = () => {
             {/* <!-- Manage --> */}
             <div className="bg-white p-6 rounded-lg shadow-md mt-6">
               <h3 className="text-xl font-bold mb-6">Manage Job</h3>
-              <a
-                href="/add-job.html"
+              <Link
+                to="/job-edit"
                 className="bg-indigo-500 hover:bg-indigo-600 text-white text-center font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline mt-4 block"
-                >Edit Job</a
-              >
-              <button
+                >Edit Job</Link>
+              
+              <button onClick={()=> onclickdelete(jobs.id)}
                 className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline mt-4 block"
               >
                 Delete Job
