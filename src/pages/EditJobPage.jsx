@@ -1,22 +1,56 @@
-import React, {useState} from 'react'
-import { useNavigate } from 'react-router-dom';
+import React, {useState, useEffect} from 'react'
+import { useParams, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify';
 
-const AddJobPage = ({submitnewjob}) => {
+
+export const EditJobPage = ({updateJob}) => {
+    const { id } = useParams()
+    const [jobs, setJobs] = useState('')
+    const [loading, setLoading] = useState(true)
+    const navigate = useNavigate()
+    useEffect(()=>{
+        const fetchJob = async()=> {
+            try {
+                const res = await fetch(`/api/jobs/${id}`)
+                const data = await res.json()
+                setJobs(data)
+              } catch (error) {
+                throw new Error('Unable to fetch jobs')
+              } finally {
+                setLoading(false)
+              }
+        }
+        fetchJob()
+    }, [])
+
+    useEffect(() => {
+        if (jobs) {
+            setTitle(jobs.title || '');
+            setType(jobs.type || '');
+            setLocation(jobs.location || '');
+            setDescription(jobs.description || '');
+            setSalary(jobs.salary || '');
+            setCompanyName((jobs.company && jobs.company.name) || '');
+            setCompanyDescription((jobs.company && jobs.company.description) || '');
+            setContactEmail((jobs.company && jobs.company.contactEmail) || '');
+            setContactPhone((jobs.company && jobs.company.contactPhone) || '');
+        }
+    }, [jobs]);
+
     const [title, setTitle] = useState('');
-    const [type, setType] = useState('Full-Time');
+    const [type, setType] = useState('');
     const [location, setLocation] = useState('');
     const [description, setDescription] = useState('');
-    const [salary, setSalary] = useState('Under $50K');
+    const [salary, setSalary] = useState('');
     const [companyName, setCompanyName] = useState('');
     const [companyDescription, setCompanyDescription] = useState('');
     const [contactEmail, setContactEmail] = useState('');
     const [contactPhone, setContactPhone] = useState('');
-    const navigate = useNavigate()
-    const submitform = (e)=>{
+
+    const submitform = async(e)=>{
         e.preventDefault()
         
-        const addnewJob = {
+        const editJob = {
             title,
             type,
             location,
@@ -30,11 +64,15 @@ const AddJobPage = ({submitnewjob}) => {
             }
         }
 
-        submitnewjob(addnewJob);
-        toast.success('Job Added Sucessfully')
-        return navigate("/jobs")
+        try {
+            await updateJob(id, editJob);
+            toast.success('Job Updated Successfully');
+            navigate(`/job/${id}`);
+          } catch (error) {
+            console.error(error);
+            toast.error('Failed to update job');
+          }
     }
-  
   return (
     <>
     <section className="bg-indigo-50">
@@ -43,7 +81,7 @@ const AddJobPage = ({submitnewjob}) => {
           className="bg-white px-6 py-8 mb-4 shadow-md rounded-md border m-4 md:m-0"
         >
           <form onSubmit={submitform}>
-            <h2 className="text-3xl text-center font-semibold mb-6">Add Job</h2>
+            <h2 className="text-3xl text-center font-semibold mb-6">Edit Job</h2>
 
             <div className="mb-4">
               <label htmlFor="type" className="block text-gray-700 font-bold mb-2"
@@ -211,7 +249,7 @@ const AddJobPage = ({submitnewjob}) => {
                 className="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline"
                 type="submit"
               >
-                Add Job
+                Edit Job
               </button>
             </div>
           </form>
@@ -221,5 +259,3 @@ const AddJobPage = ({submitnewjob}) => {
     </>
   )
 }
-
-export default AddJobPage
